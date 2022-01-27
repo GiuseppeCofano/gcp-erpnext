@@ -7,7 +7,7 @@ Questo repository contiene gli artefatti necessari per il deployment dell'applic
 
 Il diagramma di deployment  delle componenti applicative e' il seguente:
 
-![](https://github.com/italia/cloud-google-erpnext/images/deployment.png)
+![](https://github.com/italia/cloud-google-erpnext/blob/main/images/deployment.png)
 
 
 
