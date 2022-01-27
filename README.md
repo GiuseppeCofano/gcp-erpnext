@@ -1,5 +1,16 @@
 # [![ERPNext](https://erpnext.com/files/erpnext-logo-blue-v2.png)](https://erpnext.com/)
 
+
+# Modello di deployment
+
+Questo repository contiene gli artefatti necessari per il deployment dell'applicazione ERPNext su un cluster Google Kubernetes Engine. I dati vengono persistiti su un Maria DB e su un NFS share basato su Filestore.
+
+Il diagramma di deployment  delle componenti applicative e' il seguente:
+
+![](https://github.com/italia/cloud-google-erpnext/images/deployment.png)
+
+
+
 [![license](https://img.shields.io/badge/License-AGPL%20v3-blue.svg?logo=gnu&style=for-the-badge)](https://github.com/consiglionazionaledellericerche/sigla-main/blob/master/LICENSE)
 [![Supported JVM Versions](https://img.shields.io/badge/JVM-8-brightgreen.svg?style=for-the-badge&logo=Java)](https://openjdk.java.net/install/)
 [![maven central](https://img.shields.io/maven-central/v/it.cnr.si.sigla/sigla-parent.svg?logo=apache-maven&style=for-the-badge)](https://mvnrepository.com/artifact/it.cnr.si.sigla/sigla-parent)
