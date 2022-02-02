@@ -1,0 +1,14 @@
+1- Imposta l'ID del progetto associato alla cloud shell con il seguente comando:
+
+> gcloud config set project [PROJECT_ID]
+(esempio: gcloud config set project erpnext-dg)
+
+2- Abilita i servizi CloudBuild e CloudRun per il progetto:
+
+> gcloud services enable cloudresourcemanager.googleapis.com
+> gcloud services enable compute.googleapis.com
+> gcloud services enable container.googleapis.com
+> gcloud services enable file.googleapis.com
+
+3- Lancia lo script per di deploy di ERPNext
+> . deploy.sh
