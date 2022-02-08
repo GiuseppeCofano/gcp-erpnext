@@ -3,7 +3,7 @@
 > gcloud config set project [PROJECT_ID]
 (esempio: gcloud config set project erpnext-dg)
 
-2- Abilita i servizi CloudBuild e CloudRun per il progetto:
+2- Abilita i servizi GKE e Filestore per il progetto:
 
 > gcloud services enable cloudresourcemanager.googleapis.com
 > gcloud services enable compute.googleapis.com
