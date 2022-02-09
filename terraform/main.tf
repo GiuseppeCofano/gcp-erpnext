@@ -33,14 +33,6 @@ resource "google_compute_subnetwork" "subnet" {
   private_ip_google_access = true
 }
 
-resource "google_artifact_registry_repository" "docker_registry" {
-  provider = google-beta
-  project = var.project_id
-  location = var.region
-  repository_id = "ar-team-digi-erpnext-poc-001"
-  format = "DOCKER"
-}
-
 # Cloud Router
 resource "google_compute_router" "router" {
   name     = "rtr-team-digi-erpnext"

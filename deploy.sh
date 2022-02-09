@@ -1,17 +1,41 @@
 #!/bin/bash
 
+
+cd terraform
+terraform init
+terraform apply -var="project_id=$project_id"
+cd ..
+
+gcloud container clusters get-credentials gke-team-digi-erpnext-poc-001 --region europe-west4 --project $project_id
+
 function waitForERPNextDeployment() {
   INCREMENT=0
-  while [[ $(kubectl get -n erpnext deployment erpnext-${1}-erpnext -o 'jsonpath={..status.conditions[?(@.type=="Available")].status}') != "True" ]]; do
-    echo "waiting for deployment erpnext-${1}-erpnext"
+  while [[ $(kubectl get -n erpnext deployment erpnext-upstream-erpnext -o 'jsonpath={..status.conditions[?(@.type=="Available")].status}') != "True" ]]; do
+    echo "waiting for deployment erpnext-upstream-erpnext"
     sleep 3
     ((INCREMENT=INCREMENT+1))
     if [[ $INCREMENT -eq 600  ]]; then
-      echo "timeout waiting for erpnext-${1}-erpnext"
+      echo "timeout waiting for erpnext-upstream-erpnext"
       exit 1
     fi
   done
 }
+
+echo -e "\e[1m\e[4mInstall nginx-ingress and cert-manager\e[0m"
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.1/deploy/static/provider/cloud/deploy.yaml
+sleep 10
+#helm install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.7.1 --set installCRDs=true
+echo -e "\n"
+
+echo -e "\e[1m\e[4mInstall nfs-server-provisioner\e[0m"
+kubectl create namespace nfs
+kubectl create -f nfs-server-provisioner/statefulset.yaml
+kubectl create -f nfs-server-provisioner/rbac.yaml
+kubectl create -f nfs-server-provisioner/class.yaml
+echo -e "\n"
 
 echo -e "\e[1m\e[4mInstall bitnami/mariadb helm chart\e[0m"
 kubectl create namespace mariadb
@@ -39,9 +63,17 @@ kubectl create namespace erpnext
 kubectl apply -f mariadb-root-password.yaml
 helm repo add frappe https://helm.erpnext.com
 helm repo update
-helm install erpnext-upstream --namespace erpnext frappe/erpnext --version 3.2.42 --set mariadbHost=mariadb.mariadb.svc.cluster.local --set persistence.logs.storageClass=standard-rwx --set persistence.worker.storageClass=standard-rwx --values erpnext-values.yaml
+helm install erpnext-upstream --namespace erpnext frappe/erpnext --version 3.2.42 --set mariadbHost=mariadb.mariadb.svc.cluster.local --set persistence.logs.storageClass=nfs --set persistence.worker.storageClass=nfs --values erpnext-values.yaml
 echo -e "\n"
 
 echo -e "\e[1m\e[4mWait for ERPNext deployment to start\e[0m"
 waitForERPNextDeployment upstream
 echo -e "\n"
+
+echo "Creating demo dg.example.com site \e[0m"
+kubectl apply -f dg-example-site.yaml
+#Workaround to solve communicaiton issue between master nodes and service, ideally one should open the GCP fw to allow the communication to the validating webhook
+kubectl delete  validatingwebhookconfigurations ingress-nginx-admission
+kubectl apply -f dg-example-ingress.yaml
+echo -e "\n"
+

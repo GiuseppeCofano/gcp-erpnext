@@ -1,14 +1,12 @@
-1- Imposta l'ID del progetto associato alla cloud shell con il seguente comando:
+0- Autenticarsi su GCP con il seguente comando:
+> gcloud auth login
 
-> gcloud config set project [PROJECT_ID]
-(esempio: gcloud config set project erpnext-dg)
+1- Impostare l'ID del progetto destinazione come variabile d'ambiente:
+> export project_id=[project_id]
+(esempio: export project_id=erpnext-dg)
 
-2- Abilita i servizi GKE e Filestore per il progetto:
-
-> gcloud services enable cloudresourcemanager.googleapis.com
-> gcloud services enable compute.googleapis.com
-> gcloud services enable container.googleapis.com
-> gcloud services enable file.googleapis.com
+2- Impostare l'ID del progetto sulla cloud shell:
+> gcloud config set project $project_id
 
 3- Lancia lo script per di deploy di ERPNext
-> . deploy.sh
+>  bash deploy.sh

@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: erpnext-upstream-create-site
+  namespace: erpnext
   labels:
     helm.sh/chart: erpnext-3.2.42
     app.kubernetes.io/name: erpnext
