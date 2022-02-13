@@ -21,6 +21,33 @@ Il diagramma di deployment  delle componenti applicative e' il seguente:
 [![<Build doc Status>](https://circleci.com/gh/consiglionazionaledellericerche/sigla-main.svg?style=svg)](https://app.circleci.com/pipelines/github/consiglionazionaledellericerche/sigla-main)
 [![<docs>](https://circleci.com/gh/consiglionazionaledellericerche/sigla-main.svg?style=shield)](https://consiglionazionaledellericerche.github.io/sigla-main)
 
+## Step di Deployment
+
+0- Autenticarsi su GCP con il seguente comando:
+```console
+> gcloud auth login
+```
+
+
+1- Impostare l'ID del progetto destinazione come variabile d'ambiente:
+```console
+> export project_id=[project_id]
+```
+(esempio: export project_id=erpnext-dg)
+
+
+2- Impostare l'ID del progetto sulla cloud shell:
+```console
+> gcloud config set project $project_id
+```
+
+
+3- Lancia lo script per di deploy di ERPNext
+```console
+>  chmod u+x deploy.sh
+>  ./deploy.sh
+```
+
 ## Provalo su Google Cloud
 [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/GiuseppeCofano/gcp-erpnext.git&cloudshell_workspace=./&cloudshell_print=print.txt&shellonly=true)
  

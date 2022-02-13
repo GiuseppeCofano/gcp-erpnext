@@ -70,7 +70,7 @@ echo -e "\e[1m\e[4mWait for ERPNext deployment to start\e[0m"
 waitForERPNextDeployment upstream
 echo -e "\n"
 
-echo "Creating demo dg.example.com site \e[0m"
+echo -e "Creating demo dg.example.com site \e[0m"
 kubectl apply -f dg-example-site.yaml
 #Workaround to solve communicaiton issue between master nodes and service, ideally one should open the GCP fw to allow the communication to the validating webhook
 kubectl delete  validatingwebhookconfigurations ingress-nginx-admission
@@ -82,10 +82,14 @@ while [[ $(kubectl get -n erpnext jobs erpnext-upstream-create-site -o 'jsonpath
   echo "waiting for erpnext-upstream-create-site"
   sleep 3
   ((INCREMENT=INCREMENT+1))
-  if [[ $INCREMENT -eq 600  ]]; then
+  if [[ $INCREMENT -eq 900  ]]; then
     echo "timeout waiting for erpnext-upstream-create-site"
     exit 1
   fi
 done
+INGRESS_IP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o 'jsonpath={..status.loadBalancer.ingress[0].ip}')
+
+echo -e "Site successfully created. Please go the Admin UI to complete site customization\e[0m"
+echo -e "The Admin UI is available at https://dg.example.com on the IP address $INGRESS_IP\e[0m"
 echo -e "\n"
 
