@@ -1,6 +1,6 @@
 # Create first site
 createSite:
-  enabled: true
+  enabled: false
   siteName: "dg.example.org"
   dbRootUser: "root"
   adminPassword: "admin"
@@ -9,7 +9,7 @@ createSite:
 
 # Ingress
 ingress:
-  enabled: true
+  enabled: false
   annotations:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"

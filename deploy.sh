@@ -75,5 +75,17 @@ kubectl apply -f dg-example-site.yaml
 #Workaround to solve communicaiton issue between master nodes and service, ideally one should open the GCP fw to allow the communication to the validating webhook
 kubectl delete  validatingwebhookconfigurations ingress-nginx-admission
 kubectl apply -f dg-example-ingress.yaml
+
+echo -e "\e[1m\e[4mWait for site creation to be completed\e[0m"
+INCREMENT=0
+while [[ $(kubectl get -n erpnext jobs erpnext-upstream-create-site -o 'jsonpath={..status.conditions[?(@.type=="Complete")].status}') != "True" ]]; do
+  echo "waiting for erpnext-upstream-create-site"
+  sleep 3
+  ((INCREMENT=INCREMENT+1))
+  if [[ $INCREMENT -eq 600  ]]; then
+    echo "timeout waiting for erpnext-upstream-create-site"
+    exit 1
+  fi
+done
 echo -e "\n"
 
