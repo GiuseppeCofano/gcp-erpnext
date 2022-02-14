@@ -89,7 +89,7 @@ while [[ $(kubectl get -n erpnext jobs erpnext-upstream-create-site -o 'jsonpath
 done
 INGRESS_IP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o 'jsonpath={..status.loadBalancer.ingress[0].ip}')
 
-echo -e "Site successfully created. Please go the Admin UI to complete site customization\e[0m"
-echo -e "The Admin UI is available at https://dg.example.com on the IP address $INGRESS_IP\e[0m"
+echo -e "\e[1m\e[4mSite successfully created. Please go the Admin UI to complete site customization\e[0m"
+echo -e "\e[1m\e[4mThe Admin UI is available at https://dg.example.com on the IP address $INGRESS_IP\e[0m"
 echo -e "\n"
 

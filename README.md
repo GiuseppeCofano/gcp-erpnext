@@ -23,26 +23,26 @@ Il diagramma di deployment  delle componenti applicative e' il seguente:
 
 ## Step di Deployment
 
-0- Autenticarsi su GCP con il seguente comando:
+Autenticarsi su GCP con il seguente comando:
 ```console
 > gcloud auth login
 ```
 
 
-1- Impostare l'ID del progetto destinazione come variabile d'ambiente:
+Impostare l'ID del progetto destinazione come variabile d'ambiente:
 ```console
 > export project_id=[project_id]
 ```
 (esempio: export project_id=erpnext-dg)
 
 
-2- Impostare l'ID del progetto sulla cloud shell:
+Impostare l'ID del progetto sulla cloud shell:
 ```console
 > gcloud config set project $project_id
 ```
 
 
-3- Lancia lo script per di deploy di ERPNext
+Lancia lo script per di deploy di ERPNext
 ```console
 >  chmod u+x deploy.sh
 >  ./deploy.sh
