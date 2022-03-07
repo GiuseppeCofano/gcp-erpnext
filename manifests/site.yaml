@@ -1,0 +1,72 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: erpnext-upstream-create-site
+  namespace: erpnext
+  labels:
+    helm.sh/chart: erpnext-3.2.42
+    app.kubernetes.io/name: erpnext
+    app.kubernetes.io/instance: erpnext-upstream
+    app.kubernetes.io/version: "v13.19.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      serviceAccountName: erpnext-upstream
+      securityContext:
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 3000
+        runAsUser: 1000
+      initContainers:
+      - name: populate-assets
+        image: "frappe/erpnext-nginx:v13.19.0"
+        command: ["/bin/bash", "-c"]
+        args:
+          - "rsync -a --delete /var/www/html/assets/frappe /assets"
+        volumeMounts:
+          - name: assets-cache
+            mountPath: /assets
+      containers:
+      - name: create-site
+        image: "frappe/erpnext-worker:v13.19.0"
+        args: ["new"]
+        env:
+          - name: "SITE_NAME"
+            value: "%site_name%"
+          - name: "DB_ROOT_USER"
+            value: "root"
+          - name: "MYSQL_ROOT_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                key:  password
+                name: erpnext-upstream-secrets
+          - name: "ADMIN_PASSWORD"
+            value: "admin"
+          - name: "INSTALL_APPS"
+            value: "erpnext"
+        securityContext:
+          capabilities:
+            add:
+            - CAP_CHOWN
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: sites-dir
+            mountPath: /home/frappe/frappe-bench/sites
+          - name: assets-cache
+            mountPath: /home/frappe/frappe-bench/sites/assets
+          - name: logs
+            mountPath: /home/frappe/frappe-bench/logs
+      restartPolicy: Never
+      volumes:
+        - name: assets-cache
+          emptyDir: {}
+        - name: sites-dir
+          persistentVolumeClaim:
+            claimName: erpnext-upstream
+            readOnly: false
+        - name: logs
+          persistentVolumeClaim:
+            claimName: erpnext-upstream-logs
+            readOnly: false

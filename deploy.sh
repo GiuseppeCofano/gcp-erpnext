@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source <(grep = config.ini)
 
 cd terraform
 terraform init
@@ -32,16 +33,16 @@ echo -e "\n"
 
 echo -e "\e[1m\e[4mInstall nfs-server-provisioner\e[0m"
 kubectl create namespace nfs
-kubectl create -f nfs-server-provisioner/statefulset.yaml
-kubectl create -f nfs-server-provisioner/rbac.yaml
-kubectl create -f nfs-server-provisioner/class.yaml
+kubectl create -f manifests/nfs-server-provisioner/statefulset.yaml
+kubectl create -f manifests/nfs-server-provisioner/rbac.yaml
+kubectl create -f manifests/nfs-server-provisioner/class.yaml
 echo -e "\n"
 
 echo -e "\e[1m\e[4mInstall bitnami/mariadb helm chart\e[0m"
 kubectl create namespace mariadb
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install mariadb -n mariadb bitnami/mariadb -f mariadb-local-values.yaml
+helm install mariadb -n mariadb bitnami/mariadb -f manifests/mariadb-local-values.yaml --set rootPassword=$password
 echo -e "\n"
 
 
@@ -60,21 +61,25 @@ echo -e "\n"
 
 echo -e "\e[1m\e[4mInstall frappe/erpnext helm chart\e[0m"
 kubectl create namespace erpnext
-kubectl apply -f mariadb-root-password.yaml
+kubectl apply -f manifests/mariadb-root-password.yaml
 helm repo add frappe https://helm.erpnext.com
 helm repo update
-helm install erpnext-upstream --namespace erpnext frappe/erpnext --version 3.2.42 --set mariadbHost=mariadb.mariadb.svc.cluster.local --set persistence.logs.storageClass=nfs --set persistence.worker.storageClass=nfs --values erpnext-values.yaml
+helm install erpnext-upstream --namespace erpnext frappe/erpnext --version $version --set mariadbHost=mariadb.mariadb.svc.cluster.local --set persistence.logs.storageClass=nfs --set persistence.worker.storageClass=nfs --values manifests/erpnext-values.yaml
 echo -e "\n"
 
 echo -e "\e[1m\e[4mWait for ERPNext deployment to start\e[0m"
 waitForERPNextDeployment upstream
 echo -e "\n"
 
-echo -e "Creating demo dg.example.com site \e[0m"
-kubectl apply -f dg-example-site.yaml
+echo -e "Creating demo $site_name site \e[0m"
+
+
+sed s/%site_name%/$site_name/g manifests/site.yaml > manifests/$site_name.yaml
+sed s/%site_name%/$site_name/g manifests/site-ingress.yaml > manifests/$site_name-ingress.yaml
+kubectl apply -f manifests/$site_name.yaml
 #Workaround to solve communicaiton issue between master nodes and service, ideally one should open the GCP fw to allow the communication to the validating webhook
 kubectl delete  validatingwebhookconfigurations ingress-nginx-admission
-kubectl apply -f dg-example-ingress.yaml
+kubectl apply -f manifests/$site_name-ingress.yaml
 
 echo -e "\e[1m\e[4mWait for site creation to be completed\e[0m"
 INCREMENT=0
@@ -90,6 +95,6 @@ done
 INGRESS_IP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o 'jsonpath={..status.loadBalancer.ingress[0].ip}')
 
 echo -e "\e[1m\e[4mSite successfully created. Please go the Admin UI to complete site customization\e[0m"
-echo -e "\e[1m\e[4mThe Admin UI is available at https://dg.example.com on the IP address $INGRESS_IP\e[0m"
+echo -e "\e[1m\e[4mThe Admin UI is available at https://$site_name on the IP address $INGRESS_IP\e[0m"
 echo -e "\n"
 
