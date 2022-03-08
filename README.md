@@ -42,6 +42,13 @@ Impostare l'ID del progetto sulla cloud shell:
 ```
 
 
+Configura nel file config.ini project, nome del sito da creare su ERPNext, versione software di ERPNext da deployare e password da usare sul DB:
+```console
+> vi config.ini
+> ...
+```
+
+
 Lancia lo script per di deploy di ERPNext
 ```console
 >  chmod u+x deploy.sh
@@ -50,4 +57,8 @@ Lancia lo script per di deploy di ERPNext
 
 ## Provalo su Google Cloud
 [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/GiuseppeCofano/gcp-erpnext.git&cloudshell_workspace=./&cloudshell_print=print.txt&shellonly=true)
- 
+
+
+## Feature avanzate
+
+Nel folder How-to puoi trovare documentazione su come gestire aspetti operativi come il ciclo di vita della piattaforma ERPNext o il monitoraggio.
