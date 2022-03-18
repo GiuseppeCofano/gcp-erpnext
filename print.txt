@@ -14,6 +14,9 @@
 > gcloud config set project $project_id
 
 
-3- Lancia lo script per di deploy di ERPNext
+3- Configura nel file config.ini project, nome del sito da creare su ERPNext, versione software di ERPNext da deployare e password da usare sul DB:
+> vi config.ini
+
+4- Lancia lo script per di deploy di ERPNext
 >  chmod u+x deploy.sh
 >  ./deploy.sh
