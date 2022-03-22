@@ -68,9 +68,8 @@ Al termine del deployment o in caso di problemi, è possibile effettuare le segu
 gcloud container clusters list
 ```
 
-1) Verificare che i pod dell'applicazione ERPNext e delle sue dipendenze (Nginx Ingress, NFS Provisioner, MariaDB) siano in stato di Running (o di Completed per i job):
+2) Verificare che i pod dell'applicazione ERPNext e delle sue dipendenze (Nginx Ingress, NFS Provisioner, MariaDB) siano in stato di Running (o di Completed per i job):
 ```console
-kubectl get pods --all-namespaces
 kubectl get pods -n ingress-nginx
 kubectl get pods -n nfs
 kubectl get pods -n mariadb
