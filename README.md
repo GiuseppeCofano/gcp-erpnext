@@ -59,6 +59,25 @@ Lancia lo script per di deploy di ERPNext
 [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/GiuseppeCofano/gcp-erpnext.git&cloudshell_workspace=./&cloudshell_print=print.txt&shellonly=true)
 
 
+## Troubleshooting
+
+Al termine del deployment o in caso di problemi, è possibile effettuare le seguenti verifiche di base.
+
+1) Verificare che il cluster GKE sia stato creato correttamente e sia in stato di 'RUNNING':
+```console
+gcloud container clusters list
+```
+
+1) Verificare che i pod dell'applicazione ERPNext e delle sue dipendenze (Nginx Ingress, NFS Provisioner, MariaDB) siano in stato di Running (o di Completed per i job):
+```console
+kubectl get pods --all-namespaces
+kubectl get pods -n ingress-nginx
+kubectl get pods -n nfs
+kubectl get pods -n mariadb
+kubectl get pods -n erpnext
+```
+
+
 ## Feature avanzate
 
 Nel folder How-to puoi trovare documentazione su come gestire aspetti operativi come il ciclo di vita della piattaforma ERPNext o il monitoraggio.
