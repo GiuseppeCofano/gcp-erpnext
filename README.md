@@ -59,6 +59,12 @@ Lancia lo script per di deploy di ERPNext
 [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/GiuseppeCofano/gcp-erpnext.git&cloudshell_workspace=./&cloudshell_print=print.txt&shellonly=true)
 
 
+## Cosa viene deployato
+
+Lo script deploy.sh crea le infrastrutture cloud (VPC, subnet, cluster GKE) su cui viene deployata la piattaforma ERPNext e le sue dipendenze (Nginx Ingress, NFS Provisioner, MariaDB) sotto forma di microservizi (container).
+Sulla piattaforma ERPNext viene installato un sito pronto per essere utilizzato, con FQDN configurabile nel file 'config.ini'.
+NOTA: al termine del deploy, il sito ERPNext creato non è risolvibile. Occorre creare una entry DNS per l'FQDN del sito nella propria infrastruttura NS. L'IP da usare è quello dell'Ingress Nginx.
+
 ## Requirements
 
 Verificare che l'utente che lancia il comando di deployment abbia il role di 'Project Owner' sul project GCP.
