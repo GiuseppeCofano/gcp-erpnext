@@ -59,6 +59,19 @@ Lancia lo script per di deploy di ERPNext
 [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/GiuseppeCofano/gcp-erpnext.git&cloudshell_workspace=./&cloudshell_print=print.txt&shellonly=true)
 
 
+## Requirements
+
+Verificare che l'utente che lancia il comando di deployment abbia il role di 'Project Owner' sul project GCP.
+Verificare che le seguenti API siano abilitate a livello di project GCP:
+- cloudapis 
+- cloudresourcemanager 
+- compute 
+- container 
+- file
+- dns
+Nel caso qualcuna sia disabled, è possibile utilizzare lo script enable_api.sh nel folder utils per abilitarle.
+
+
 ## Troubleshooting
 
 Al termine del deployment o in caso di problemi, è possibile effettuare le seguenti verifiche di base.
